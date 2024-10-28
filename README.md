@@ -84,3 +84,17 @@ The application can be deployed into a local k3d cluster using the supplied Make
 ```
 make
 ```
+You can then port-forward the service with:
+```
+kubectl port-forward deploy/tx-server 8080
+```
+and reach the API as before with, for example,
+```
+$ curl -X POST localhost:8080/api/transaction/ -d '{"transactionId":"0f7e46df-c685-4df9-9e23-e75e7ac8ba7b","amount": "99.99","timestamp":"2009-09-28T19:03:12Z"}'
+{"id":"0f7e46df-c685-4df9-9e23-e75e7ac8ba7a","status":"success"}
+```
+
+To delete the cluster, run:
+```
+make delete-local-kube-cluster
+```
