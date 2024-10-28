@@ -14,9 +14,8 @@ type metrics struct {
 func newMetrics() *metrics {
 	return &metrics{
 		requestDuration: promauto.NewHistogram(prometheus.HistogramOpts{
-			Name: "transaction_request_duration_seconds",
-			Help: "Time taken to process transaction requests",
-			// You might want to tune these buckets based on expected latencies
+			Name:    "transaction_request_duration_seconds",
+			Help:    "Time taken to process transaction requests",
 			Buckets: prometheus.DefBuckets,
 		}),
 		requestSuccess: promauto.NewCounter(prometheus.CounterOpts{

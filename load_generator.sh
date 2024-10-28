@@ -12,6 +12,6 @@ while true; do
         -H "Content-Type: application/json" \
         -d "{\"transactionId\":\"$transaction_id\",\"amount\":\"$amount\",\"timestamp\":\"2009-09-28T19:03:12Z\"}"
 
-    sleep 1
+    sleep 2
 done
 

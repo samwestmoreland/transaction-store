@@ -100,9 +100,7 @@ spec:
     - Egress
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: default
+    - namespaceSelector: {}
       podSelector:
         matchLabels:
           app: tx-server
