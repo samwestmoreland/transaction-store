@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -34,22 +35,32 @@ func main() {
 
 	srv := server.New(db, logger)
 
+	// Create HTTP server
+	httpServer := &http.Server{
+		Addr:    ":8080",
+		Handler: srv.Routes(),
+	}
+
 	go func() {
 		// Set up metrics, TLS, graceful shutdown, etc
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatal(err)
+		if err := httpServer.ListenAndServe(); err != http.ErrServerClosed {
+			logger.Fatal("server error", zap.Error(err))
 		}
 	}()
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt)
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
 
-	<-quit
+	<-stop
 
+	logger.Info("shutting down server")
+	if err := httpServer.Shutdown(ctx); err != nil {
+		logger.Fatal("server shutdown error", zap.Error(err))
+	}
 }
 
-func setupLogger(level string) (*log.Logger, error) {
-	level, err := zapcore.ParseLevel(level)
+func setupLogger(levelStr string) (*zap.Logger, error) {
+	level, err := zapcore.ParseLevel(levelStr)
 	if err != nil {
 		return nil, err
 	}
