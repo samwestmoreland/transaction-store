@@ -13,10 +13,9 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST=db
-      - DB_USER=transaction_store_user
-      - DB_PASSWORD=transaction_store_password
-      - DB_NAME=transaction_store
+      - POSTGRES_DB=transaction_store
+      - POSTGRES_USER=transaction_store_user
+      - POSTGRES_PASSWORD=transaction_store_password
 
   db:
     image: postgres:16
