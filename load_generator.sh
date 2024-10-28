@@ -1,5 +1,9 @@
 #!/bin/bash
 
+INTERVAL=${1:-2}
+
+echo "Sending transactions every $INTERVAL seconds"
+
 while true; do
     # Generate a new UUID
     transaction_id=$(uuidgen)
@@ -12,6 +16,6 @@ while true; do
         -H "Content-Type: application/json" \
         -d "{\"transactionId\":\"$transaction_id\",\"amount\":\"$amount\",\"timestamp\":\"2009-09-28T19:03:12Z\"}"
 
-    sleep 2
+    sleep $INTERVAL
 done
 
