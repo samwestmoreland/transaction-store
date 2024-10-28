@@ -57,3 +57,16 @@
 ### Final checks
 - Is dockerfile multi-stage?
 - Are there unit tests?
+
+## How to run
+
+### For running in docker
+
+Run:
+`docker-compose up --build`
+
+This will spin up the server as well as a postgres instance. You can then send requests to the server like so:
+```
+$ curl -X POST localhost:8080/api/transaction/ -d '{"transactionId":"0f7e46df-c685-4df9-9e23-e75e7ac8ba7a","amount": "99.99","timestamp":"2009-09-28T19:03:12Z"}'
+{"id":"0f7e46df-c685-4df9-9e23-e75e7ac8ba7a","status":"success"}
+```
