@@ -8,5 +8,6 @@ import (
 
 type Store interface {
 	InsertTransaction(ctx context.Context, tx *model.Transaction) error
+	Ping(ctx context.Context) error
 	Close()
 }
