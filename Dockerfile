@@ -6,4 +6,4 @@ COPY . .
 
 RUN go build -o transaction-store .
 
-CMD ["./transaction-store"," -listen, 8080"]
+CMD ["./transaction-store"]
