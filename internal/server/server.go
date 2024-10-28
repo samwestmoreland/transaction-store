@@ -75,6 +75,11 @@ func (s *Server) handleTransactionCreate() http.HandlerFunc {
 			return
 		}
 
+		s.logger.Debug("successfully decoded request",
+			zap.String("transaction_id", req.TransactionID),
+			zap.String("amount", req.Amount),
+			zap.Time("timestamp", req.Timestamp))
+
 		// Validate and parse the transaction ID
 		txID, err := uuid.Parse(req.TransactionID)
 		if err != nil {
