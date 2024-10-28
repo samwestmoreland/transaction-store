@@ -42,7 +42,6 @@ func main() {
 	}
 
 	go func() {
-		// Set up metrics, TLS, graceful shutdown, etc
 		if err := httpServer.ListenAndServe(); err != http.ErrServerClosed {
 			logger.Fatal("server error", zap.Error(err))
 		}
