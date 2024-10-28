@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,12 +14,13 @@ spec:
         app.kubernetes.io/name: tx-server
     spec:
       containers:
-      - name: tx-server
-        image: library/server:latest
-        imagePullPolicy: Never # required for k3d imported images
-        envFrom:
-        - secretRef:
-            name: db-secrets
+        - name: tx-server
+          image: library/server:latest
+          imagePullPolicy: Never # required for k3d imported images
+          envFrom:
+            - secretRef:
+                name: db-secrets
+
 ---
 apiVersion: v1
 kind: Service
