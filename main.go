@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -23,6 +24,12 @@ func main() {
 	}
 
 	logger, err := setupLogger(cfg.Logging.Level)
+	defer func() {
+		err := logger.Sync()
+		if err != nil && !errors.Is(err, syscall.ENOTTY) {
+			logger.Error("failed to sync logger", zap.Error(err))
+		}
+	}()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -35,9 +42,11 @@ func main() {
 
 	srv := server.New(db, logger)
 
+	logger.Info("starting server", zap.Int("port", cfg.Server.Port))
+
 	// Create HTTP server
 	httpServer := &http.Server{
-		Addr:    ":8080",
+		Addr:    fmt.Sprintf(":%d", cfg.Server.Port),
 		Handler: srv.Routes(),
 	}
 
@@ -71,13 +80,6 @@ func setupLogger(levelStr string) (*zap.Logger, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	defer func() {
-		err := logger.Sync()
-		if err != nil && !errors.Is(err, syscall.ENOTTY) {
-			logger.Error("failed to sync logger", zap.Error(err))
-		}
-	}()
 
 	return logger, nil
 }
