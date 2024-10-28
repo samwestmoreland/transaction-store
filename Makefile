@@ -60,7 +60,7 @@ generate-db-secrets: $(DB_SECRETS_CREATED)
 deploy-application: $(DB_SECRETS_CREATED)
 	$(KUBECTL) create namespace observability --dry-run=client -o yaml | $(KUBECTL) apply -f -
 	$(KUBECTL) apply \
-		-f manifests/server \
-		-f manifests/postgres \
-		-f observability/manifests
+		-f k8s/manifests/server \
+		-f k8s/manifests/postgres \
+		-f k8s/manifests/observability
 	@echo "Transaction server deployed to Kubernetes cluster"
