@@ -44,7 +44,7 @@ func main() {
 
 	db, err := postgres.New(dbConnCtx, connString, logger)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal("failed to connect to database", zap.Error(err))
 	}
 	defer db.Close()
 
