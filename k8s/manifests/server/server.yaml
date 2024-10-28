@@ -13,6 +13,9 @@ spec:
       labels:
         app.kubernetes.io/name: tx-server
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
       containers:
         - name: tx-server
           image: library/server:latest
