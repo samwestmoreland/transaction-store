@@ -19,12 +19,15 @@ import (
 )
 
 func main() {
+	log.Print("Sleeping for 30 seconds")
+	time.Sleep(30 * time.Second)
+
 	cfg, err := config.Load(".")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	logger, err := setupLogger(cfg.Logging.Level)
+	logger, err := setUpLogger(cfg.Logging.Level)
 	defer func() {
 		err := logger.Sync()
 		if err != nil && !errors.Is(err, syscall.ENOTTY) {
@@ -77,7 +80,7 @@ func main() {
 	}
 }
 
-func setupLogger(levelStr string) (*zap.Logger, error) {
+func setUpLogger(levelStr string) (*zap.Logger, error) {
 	level, err := zapcore.ParseLevel(levelStr)
 	if err != nil {
 		return nil, err

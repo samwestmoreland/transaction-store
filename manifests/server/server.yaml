@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tx-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tx-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tx-server
+    spec:
+      containers:
+      - name: tx-server
+        image: library/server:latest
+        imagePullPolicy: Never # required for k3d imported images
+        envFrom:
+        - secretRef:
+            name: db-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tx-server-svc
+spec:
+  selector:
+    app.kubernetes.io/name: tx-server
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
