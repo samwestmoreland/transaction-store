@@ -35,7 +35,12 @@ func main() {
 	dbConnCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	db, err := postgres.New(dbConnCtx, cfg.Database.ConnString, logger)
+	connString, err := getDBConnString()
+	if err != nil {
+		logger.Fatal("failed to get database connection string", zap.Error(err))
+	}
+
+	db, err := postgres.New(dbConnCtx, connString, logger)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -85,4 +90,32 @@ func setupLogger(levelStr string) (*zap.Logger, error) {
 	}
 
 	return logger, nil
+}
+
+func loadDBCredentialsFromEnv() (string, string, string, error) {
+	user := os.Getenv("POSTGRES_USER")
+	if user == "" {
+		return "", "", "", errors.New("POSTGRES_USER must be set")
+	}
+
+	password := os.Getenv("POSTGRES_PASSWORD")
+	if password == "" {
+		return "", "", "", errors.New("POSTGRES_PASSWORD must be set")
+	}
+
+	dbName := os.Getenv("POSTGRES_DB")
+	if dbName == "" {
+		return "", "", "", errors.New("POSTGRES_DB must be set")
+	}
+
+	return user, password, dbName, nil
+}
+
+func getDBConnString() (string, error) {
+	user, password, dbName, err := loadDBCredentialsFromEnv()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("postgresql://%s:%s@db:5432/%s", user, password, dbName), nil
 }
