@@ -1,0 +1,31 @@
+services:
+  app:
+    build: .
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: ./
+        - action: rebuild
+          path: ./
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=transaction_store_user
+      - DB_PASSWORD=transaction_store_password
+      - DB_NAME=transaction_store
+
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=transaction_store
+      - POSTGRES_USER=transaction_store_user
+      - POSTGRES_PASSWORD=transaction_store_password
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
