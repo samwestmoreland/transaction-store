@@ -41,18 +41,18 @@ spec:
           volumeMounts:
             - name: config-volume
               mountPath: /etc/prometheus
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 1000m
+            requests:
+              memory: 500Mi
+              cpu: 500m
       volumes:
         - name: config-volume
           configMap:
             name: prometheus-server-conf
             defaultMode: 420
-      resources:
-        limits:
-          memory: 1Gi
-          cpu: 1000m
-        requests:
-          memory: 500Mi
-          cpu: 500m
 
 ---
 apiVersion: v1
