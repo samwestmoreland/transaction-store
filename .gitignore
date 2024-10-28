@@ -1,3 +1,5 @@
 .cluster-created
 .db-secrets-created
 .images-imported
+*.tfstate*
+.terraform*
