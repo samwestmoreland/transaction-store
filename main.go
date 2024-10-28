@@ -19,9 +19,6 @@ import (
 )
 
 func main() {
-	log.Print("Sleeping for 30 seconds")
-	time.Sleep(30 * time.Second)
-
 	cfg, err := config.Load(".")
 	if err != nil {
 		log.Fatal(err)
