@@ -129,7 +129,6 @@ func (s *Server) handleTransactionCreate() http.HandlerFunc {
 
 func (s *Server) handleHealth() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Maybe check DB connection here
 		ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 		defer cancel()
 

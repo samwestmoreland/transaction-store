@@ -7,6 +7,10 @@ import (
 )
 
 type Config struct {
+	Server struct {
+		Port int `mapstructure:"port"`
+	} `mapstructure:"server"`
+
 	Database struct {
 		ConnString string `mapstructure:"conn_string"`
 	} `mapstructure:"database"`
