@@ -37,13 +37,8 @@ func New(db Store, logger *zap.Logger) *Server {
 func (s *Server) Routes() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	// API endpoints
 	mux.HandleFunc("/api/transaction/", s.handleTransactionCreate())
-
-	// Metrics endpoint
 	mux.Handle("/metrics", promhttp.Handler())
-
-	// Maybe add a health check endpoint
 	mux.HandleFunc("/health", s.handleHealth())
 
 	return mux
