@@ -50,9 +50,14 @@
 ### Other considerations
 - Use self-signed certs but document how it would be done in production (e.g., cert-manager)
 - Document why specific pool sizes for db connections
+- Why i'm using local images
 
 ### Todos
-- Make an interface for logger?
+- Add unit tests
+- Add network policies
+- Add mtls
+- Add dashboards
+- Pod disruption budgets
 
 ### Final checks
 - Is dockerfile multi-stage?
