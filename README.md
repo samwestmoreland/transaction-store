@@ -42,7 +42,6 @@
 - Consider backup/restore procedures
 - Add persistence configuration for Postgres
 
-
 ### Documentation:
 - Architecture diagram
 - API documentation

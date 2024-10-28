@@ -1,0 +1,5 @@
+database:
+  conn_string: "postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+
+logging:
+  level: "info"
