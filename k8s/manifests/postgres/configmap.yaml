@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-config
-data:
-  POSTGRES_DB: transaction_store
-  POSTGRES_USER: transaction_store_user
-  POSTGRES_PASSWORD: transaction_store_password
