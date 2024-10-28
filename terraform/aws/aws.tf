@@ -1,5 +1,7 @@
 provider "aws" {
   region = "us-east-1"
+  access_key = var.AWS_ACCESS_KEY
+  secret_key = var.AWS_SECRET_KEY
 }
 
 resource "aws_vpc" "main" {
@@ -39,7 +41,8 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_nat_gateway" "gw" {
-  allocation_id = aws_eip.nat.id
+  count = 1
+  allocation_id = aws_eip.nat[count.index].id
   subnet_id     = aws_subnet.public.id
 
   tags = {
@@ -48,7 +51,7 @@ resource "aws_nat_gateway" "gw" {
 }
 
 resource "aws_eip" "nat" {
-  vpc   = true
+  domain = "vpc"
   count = 1
   tags = {
     Name = "NAT EIP"
@@ -75,7 +78,7 @@ resource "aws_security_group" "app" {
 }
 
 resource "aws_ecs_cluster" "main" {
-  name = "Main Cluster"
+  name = "peaceful-beaver"
 }
 
 resource "aws_ecs_task_definition" "app" {
@@ -125,7 +128,7 @@ resource "aws_ecs_service" "app" {
 
 # Create a load balancer
 resource "aws_lb" "app" {
-  name               = "App Load Balancer"
+  name               = "app-load-balancer"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.app.id]
@@ -144,7 +147,7 @@ resource "aws_lb_listener" "app" {
 }
 
 resource "aws_lb_target_group" "app" {
-  name        = "App Target Group"
+  name        = "app-target-group"
   port        = 80
   protocol     = "HTTP"
   vpc_id      = aws_vpc.main.id
