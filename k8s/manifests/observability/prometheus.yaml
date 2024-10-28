@@ -9,12 +9,9 @@ data:
       scrape_interval: 15s
       evaluation_interval: 15s
     scrape_configs:
-      - job_name: 'ping_service'
+      - job_name: 'tx-server'
         static_configs:
-          - targets: ['ping.default.svc.cluster.local:8080']
-      - job_name: 'pong_service'
-        static_configs:
-          - targets: ['pong.default.svc.cluster.local:2112']
+          - targets: ['tx-server-svc.default.svc.cluster.local:8080']
 ---
 
 apiVersion: apps/v1
