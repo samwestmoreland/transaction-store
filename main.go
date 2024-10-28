@@ -32,13 +32,15 @@ func main() {
 		}
 	}()
 
-	dbConnCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
 	connString, err := getDBConnString()
 	if err != nil {
 		logger.Fatal("failed to get database connection string", zap.Error(err))
 	}
+
+	logger.Debug("database connection string", zap.String("conn_string", connString))
+
+	dbConnCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	db, err := postgres.New(dbConnCtx, connString, logger)
 	if err != nil {
