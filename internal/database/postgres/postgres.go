@@ -20,7 +20,10 @@ func New(ctx context.Context, connString string, logger *zap.Logger) (*DB, error
 		return nil, err
 	}
 
-	return &DB{pool: pool}, nil
+	return &DB{
+		pool:   pool,
+		logger: logger,
+	}, nil
 }
 
 func (db *DB) InsertTransaction(ctx context.Context, tx *model.Transaction) error {

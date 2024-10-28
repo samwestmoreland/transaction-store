@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/samwestmoreland/transaction-store/internal/config"
 	"github.com/samwestmoreland/transaction-store/internal/database/postgres"
@@ -31,10 +32,10 @@ func main() {
 		}
 	}()
 
-	ctx, cancel := context.WithCancel(context.Background())
+	dbConnCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	db, err := postgres.New(ctx, cfg.Database.ConnString, logger)
+	db, err := postgres.New(dbConnCtx, cfg.Database.ConnString, logger)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,6 +63,8 @@ func main() {
 	<-stop
 
 	logger.Info("shutting down server")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	if err := httpServer.Shutdown(ctx); err != nil {
 		logger.Fatal("server shutdown error", zap.Error(err))
 	}
