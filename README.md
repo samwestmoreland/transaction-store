@@ -49,7 +49,7 @@ To generate some load on the server, there is a utility script at the root of th
 ./load-generator.sh <request interval in seconds>
 ```
 
-#### Components
+## Components
 
 ### The server
 

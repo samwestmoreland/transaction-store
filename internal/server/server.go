@@ -17,12 +17,13 @@ type Server struct {
 	db      Store
 	logger  *zap.Logger
 	metrics *metrics
+	testing bool
 }
 
 // TransactionRequest represents the incoming JSON payload
 type TransactionRequest struct {
 	TransactionID string    `json:"transactionId"`
-	Amount        string    `json:"amount"` // Using string to match the example curl command
+	Amount        string    `json:"amount"`
 	Timestamp     time.Time `json:"timestamp"`
 }
 
@@ -31,6 +32,15 @@ func New(db Store, logger *zap.Logger) *Server {
 		db:      db,
 		logger:  logger,
 		metrics: newMetrics(),
+		testing: false,
+	}
+}
+
+func NewTesting(db Store, logger *zap.Logger) *Server {
+	return &Server{
+		db:      db,
+		logger:  logger,
+		testing: true,
 	}
 }
 
@@ -57,6 +67,10 @@ func (s *Server) handleTransactionCreate() http.HandlerFunc {
 		// Start timing the request
 		start := time.Now()
 		defer func() {
+			if s.testing {
+				return
+			}
+
 			s.metrics.requestDuration.Observe(time.Since(start).Seconds())
 		}()
 
@@ -66,7 +80,9 @@ func (s *Server) handleTransactionCreate() http.HandlerFunc {
 			s.logger.Warn("failed to decode request",
 				zap.Error(err))
 			http.Error(w, "invalid request body", http.StatusBadRequest)
-			s.metrics.requestErrors.Inc()
+			if !s.testing {
+				s.metrics.requestErrors.Inc()
+			}
 			return
 		}
 
@@ -82,7 +98,9 @@ func (s *Server) handleTransactionCreate() http.HandlerFunc {
 				zap.String("id", req.TransactionID),
 				zap.Error(err))
 			http.Error(w, "invalid transaction ID", http.StatusBadRequest)
-			s.metrics.requestErrors.Inc()
+			if !s.testing {
+				s.metrics.requestErrors.Inc()
+			}
 			return
 		}
 
@@ -93,7 +111,9 @@ func (s *Server) handleTransactionCreate() http.HandlerFunc {
 				zap.String("amount", req.Amount),
 				zap.Error(err))
 			http.Error(w, "invalid amount", http.StatusBadRequest)
-			s.metrics.requestErrors.Inc()
+			if !s.testing {
+				s.metrics.requestErrors.Inc()
+			}
 			return
 		}
 
@@ -110,12 +130,16 @@ func (s *Server) handleTransactionCreate() http.HandlerFunc {
 				zap.Error(err),
 				zap.String("txID", tx.ID.String()))
 			http.Error(w, "internal server error", http.StatusInternalServerError)
-			s.metrics.requestErrors.Inc()
+			if !s.testing {
+				s.metrics.requestErrors.Inc()
+			}
 			return
 		}
 
 		// Increment success counter
-		s.metrics.requestSuccess.Inc()
+		if !s.testing {
+			s.metrics.requestSuccess.Inc()
+		}
 
 		// Return success response
 		w.Header().Set("Content-Type", "application/json")
